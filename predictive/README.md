@@ -8,15 +8,16 @@
 
 1. Trains a scikit-learn logistic regression locally on `hiring_training_data.csv`. No SageMaker training job is needed.
 2. Deploys the model to a SageMaker endpoint using [inference.py](inference.py).
-3. Connects to watsonx.governance and registers Amazon SageMaker as a machine learning provider.
-4. Subscribes the endpoint and logs payload and feedback data.
-5. Configures and runs the monitors:
+3. Registers the model as an external model in the inventory. Track it in an AI use case from *AI governance → External models* before you go on: this has to happen before the endpoint is subscribed, so that the evaluation results are attached to it.
+4. Connects to watsonx.governance and registers Amazon SageMaker as a machine learning provider.
+5. Subscribes the endpoint and logs payload and feedback data.
+6. Configures and runs the monitors:
    - **Quality**, against labelled feedback data
    - **Fairness**, on the `IsFemale` attribute
    - **Explainability**, for individual predictions
    - **Drift v2**, against a baseline built from the training data
    - **Model health**
-6. Registers the same endpoint a second time as a pre-production deployment and evaluates it on the labelled test file, so the model appears in both stages.
+7. Registers the same endpoint a second time as a pre-production deployment and evaluates it on the labelled test file, so the model appears in both stages.
 
 ## Prerequisites
 
@@ -43,6 +44,8 @@ cp .env.example .env
 | `PLATFORM_URL`, `OPENSCALE_URL` | Platform and OpenScale URLs for your region |
 | `OPENSCALE_INSTANCE_ID` | Instance ID, from the Insights UI |
 | `SERVICE_PROVIDER_NAME` | Display name for the SageMaker provider |
+| `IBM_ACCOUNT_ID` | IBM account ID (not the AWS account ID), used to register the external model |
+| `INVENTORY_ID` | ID of the inventory to save the external model in. The registration cell lists the valid IDs if this one is wrong |
 | `DB_CREDENTIALS` | Only needed if the instance has no data mart yet |
 | `DATA_DIR`, `LABEL`, `PROTECTED_ATTRIBUTE` | Data location, label column and fairness attribute |
 
